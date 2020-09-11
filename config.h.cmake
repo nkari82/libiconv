@@ -27,9 +27,7 @@
 #cmakedefine DOUBLE_SLASH_IS_DISTINCT_ROOT	1
 
 /* Define as good substitute value for EILSEQ. */
-#ifndef EILSEQ 
 #cmakedefine EILSEQ ${EILSEQ}
-#endif
 
 /* Define to 1 to enable a few rarely used encodings. */
 #cmakedefine ENABLE_EXTRA	1

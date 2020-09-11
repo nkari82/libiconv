@@ -15,7 +15,6 @@ include(CheckSymbolExists)
 #
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries")
 
-set(EILSEQ "84")
 set(ICONV_CONST "const")
 set(HAVE_WCHAR_T "1")
 CHECK_FUNCTION_EXISTS(alloca HAVE_ALLOCA)
