@@ -8,7 +8,7 @@ project(Libiconv)
 #
 # Options
 #
-set(BUILD_STATIC_LIBS ON CACHE BOOL "Build static libraries")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries")
 
 # Config file
 configure_file(
@@ -68,11 +68,11 @@ set(${libname}_sources
   ${Libiconv_BINARY_DIR}/localcharset.h
 )
 
-if(BUILD_STATIC_LIBS)
+if(BUILD_SHARED_LIBS)
+add_library(${libname} SHARED ${${libname}_sources})
+else()
 add_definitions(-DLIBICONV_STATIC)
 add_library(${libname} STATIC ${${libname}_sources})
-else()
-add_library(${libname} SHARED ${${libname}_sources})
 endif()
 list(APPEND Libiconv_TARGETS ${libname})
 list(APPEND Libiconv_headers ${Libiconv_BINARY_DIR}/localcharset.h)
@@ -111,11 +111,11 @@ set(${libname}_sources
   ${Libiconv_BINARY_DIR}/iconv.h
 )
 
-if(BUILD_STATIC_LIBS)
+if(BUILD_SHARED_LIBS)
+add_library(${libname} SHARED ${${libname}_sources})
+else()
 add_definitions(-DLIBICONV_STATIC)
 add_library(${libname} STATIC ${${libname}_sources})
-else()
-add_library(${libname} SHARED ${${libname}_sources})
 endif()
 target_link_libraries(${libname} libcharset)
 list(APPEND Libiconv_TARGETS ${libname})
