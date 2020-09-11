@@ -8,7 +8,7 @@ project(Libiconv)
 #
 # Options
 #
-set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries, Always ON since this code is LGPL" FORCE)
+set(BUILD_STATIC_LIBS ON CACHE BOOL "Build static libraries")
 
 # Config file
 configure_file(
@@ -28,13 +28,16 @@ macro(header_injection_hack)
   string(TOUPPER ${hack_LIBRARY_NAME} hack_library_name_upper)
   set(HAVE_VISIBILITY
   "WIN32
-    #if defined(${hack_LIBRARY_NAME}_EXPORTS)
-      #define ${hack_library_name_upper}_DLL_EXPORTED __declspec(dllexport)
-    #else
-      #define ${hack_library_name_upper}_DLL_EXPORTED __declspec(dllimport)
-    #endif
-  #elif true"
-  )
+	#if !defined(LIBICONV_STATIC)
+		#if defined(${hack_LIBRARY_NAME}_EXPORTS)
+			#define ${hack_library_name_upper}_DLL_EXPORTED __declspec(dllexport)
+		#else
+			#define ${hack_library_name_upper}_DLL_EXPORTED __declspec(dllimport)
+		#endif
+	#else
+		#define ${hack_library_name_upper}_DLL_EXPORTED
+	#endif
+#elif true")
   configure_file(
     ${hack_INPUT}
     ${hack_OUTPUT}
@@ -65,7 +68,12 @@ set(${libname}_sources
   ${Libiconv_BINARY_DIR}/localcharset.h
 )
 
-add_library(${libname} ${${libname}_sources})
+if(BUILD_STATIC_LIBS)
+add_definitions(-DLIBICONV_STATIC)
+add_library(${libname} STATIC ${${libname}_sources})
+else()
+add_library(${libname} SHARED ${${libname}_sources})
+endif()
 list(APPEND Libiconv_TARGETS ${libname})
 list(APPEND Libiconv_headers ${Libiconv_BINARY_DIR}/localcharset.h)
 
@@ -103,7 +111,12 @@ set(${libname}_sources
   ${Libiconv_BINARY_DIR}/iconv.h
 )
 
-add_library(${libname} ${${libname}_sources})
+if(BUILD_STATIC_LIBS)
+add_definitions(-DLIBICONV_STATIC)
+add_library(${libname} STATIC ${${libname}_sources})
+else()
+add_library(${libname} SHARED ${${libname}_sources})
+endif()
 target_link_libraries(${libname} libcharset)
 list(APPEND Libiconv_TARGETS ${libname})
 list(APPEND Libiconv_headers ${Libiconv_BINARY_DIR}/iconv.h)
