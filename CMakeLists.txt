@@ -117,8 +117,8 @@ macro(header_injection_hack)
   )
   string(TOUPPER ${hack_LIBRARY_NAME} hack_library_name_upper)
   set(HAVE_VISIBILITY
-  "WIN32
-	#if !defined(LIBICONV_STATIC)
+  "defined(_WIN32)
+	#if !defined(ICONV_STATIC)
 		#if defined(${hack_LIBRARY_NAME}_EXPORTS)
 			#define ${hack_library_name_upper}_DLL_EXPORTED __declspec(dllexport)
 		#else
@@ -161,7 +161,7 @@ set(${libname}_sources
 if(BUILD_SHARED_LIBS)
 add_library(${libname} SHARED ${${libname}_sources})
 else()
-add_definitions(-DLIBICONV_STATIC)
+add_definitions(-DICONV_STATIC)
 add_library(${libname} STATIC ${${libname}_sources})
 endif()
 list(APPEND Libiconv_TARGETS ${libname})
@@ -198,7 +198,7 @@ set(${libname}_sources
 if(BUILD_SHARED_LIBS)
 add_library(${libname} SHARED ${${libname}_sources})
 else()
-add_definitions(-DLIBICONV_STATIC)
+add_definitions(-DICONV_STATIC)
 add_library(${libname} STATIC ${${libname}_sources})
 endif()
 target_link_libraries(${libname} libcharset)
